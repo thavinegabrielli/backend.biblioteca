@@ -136,12 +136,12 @@ export class Livro {
             const novoLivro = new Livro(linha.titulo,
                                         linha.autor,
                                         linha.editora,
-                                        linha.anoPublicacao,
+                                        linha.ano_publicacao,
                                         linha.isbn,
-                                        linha.quantTotal,
-                                        linha.quantDisponivel,
-                                        linha.valorAquisicao,
-                                        linha.statusLivroEmprestado);
+                                        linha.quant_total,
+                                        linha.quant_disponivel,
+                                        linha.valor_aquisicao,
+                                        linha.status_livro_emprestado);
 
             // atribui o ID objeto
             novoLivro.setIdLivro(linha.id_Livro);
