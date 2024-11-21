@@ -86,7 +86,8 @@ export class Emprestimo {
         // usando a resposta para instanciar um objeto do tipo Emprestimo
         respostaBD.rows.forEach((linha) => {
             // instancia (cria) objeto Emprestimo
-            const novoEmprestimo = new Emprestimo(linha.id_aluno,
+            const novoEmprestimo = new Emprestimo(
+                                        linha.id_aluno,
                                         linha.id_livro,
                                         linha.data_emprestimo,
                                         linha.data_devolucao,
