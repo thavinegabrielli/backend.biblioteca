@@ -180,6 +180,7 @@ export class Aluno {
                     linha.celular
                 );
                
+                novoAluno.setIdAluno(linha.id_aluno);
 
                 listaDeAlunos.push(novoAluno);
             });
@@ -187,6 +188,7 @@ export class Aluno {
             return listaDeAlunos;
         } catch (error) {
             console.log('Erro ao buscar lista de aluno');
+            console.log(error);
             return null;
         }
     }

@@ -170,18 +170,17 @@ export class Livro {
 static async cadastroLivro(Livro: Livro): Promise<any> {
     try {
         // query para fazer insert de um Livro no banco de dados
-        const queryInsertLivro = `INSERT INTO Livro (titulo, autor, editora, ano_publicacao, ISBN, quant_total, quant_disponivel_ valor_aquisicao, status_livro_emprestado)
+        const queryInsertLivro = `INSERT INTO Livro (titulo, autor, editora, ano_publicacao, ISBN, quant_total, quant_disponivel, valor_aquisicao, status_livro_emprestado)
                                     VALUES
-                                    ('${Livro.getIdLivro()}', 
-                                    '${Livro.getTitulo()}', 
+                                    ('${Livro.getTitulo()}', 
                                     '${Livro.getAutor()}', 
                                     '${Livro.getEditora()}',
                                     '${Livro.getAnoPublicacao()}',
-                                    '${Livro.getIsbn()},
+                                    '${Livro.getIsbn()}',
                                     '${Livro.getQuantTotal()}',
+                                    '${Livro.getQuantDisponivel()}',
                                     '${Livro.getValorAquisicao()}',
-                                    '${Livro.getStatusLivroEmprestado()},
-                                    ')
+                                    '${Livro.getStatusLivroEmprestado()}')
                                     RETURNING id_Livro;`;
 
         // executa a query no banco e armazena a resposta
