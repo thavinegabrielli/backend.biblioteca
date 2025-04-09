@@ -6,7 +6,7 @@ dotenv.config();
 /**
  * Classe que representa o modelo de banco de dados.
  */
-export class DatabaseModel {
+export class DataBaseModel {
     
     /**
      * Configuração para conexão com o banco de dados
@@ -48,7 +48,7 @@ export class DatabaseModel {
     /**
      * Método para testar a conexão com o banco de dados.
      *
-     * @returns *true* caso a conexão tenha sido feita, *false* caso negativo
+     * @returns **true** caso a conexão tenha sido feita, **false** caso negativo
      */
     public async testeConexao() {
         try {

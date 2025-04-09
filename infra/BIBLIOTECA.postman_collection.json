@@ -1,0 +1,355 @@
+{
+	"info": {
+		"_postman_id": "aa539571-ece7-49b9-95e5-faa3c61983a3",
+		"name": "BIBLIOTECA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31464386"
+	},
+	"item": [
+		{
+			"name": "ALUNO",
+			"item": [
+				{
+					"name": "LISTA ALUNOS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/lista/alunos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"lista",
+								"alunos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NOVO ALUNO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Samuel\",\r\n    \"sobrenome\": \"Viana\",\r\n    \"dataNascimento\": \"1995-01-26\",\r\n    \"endereco\": \"Parque Leblon, 478\",\r\n    \"email\": \"samuel.caua.viana@facebook.com\",\r\n    \"celular\": \"85996712239\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/novo/aluno",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"novo",
+								"aluno"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ATUALIZA ALUNO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Juliana\",\r\n    \"sobrenome\": \"Coimbra\",\r\n    \"dataNascimento\": \"2005-09-09\",\r\n    \"endereco\": \"Rua Joaquim Antônio Teixeira, 68\",\r\n    \"email\": \"juliana.scoimbra@estadao.com.br\",\r\n    \"celular\": \"64987598648\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/atualiza/aluno?idAluno=21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"atualiza",
+								"aluno"
+							],
+							"query": [
+								{
+									"key": "idAluno",
+									"value": "21"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REMOVE ALUNO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/remove/aluno?idAluno=20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"remove",
+								"aluno"
+							],
+							"query": [
+								{
+									"key": "idAluno",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LIVRO",
+			"item": [
+				{
+					"name": "LISTA LIVROS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/lista/livros",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"lista",
+								"livros"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NOVO LIVRO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"titulo\": \"Guia prático de TypeScript Melhore suas aplicações JavaScript\",\r\n    \"autor\": \"Thiago da Silva Adriano\",\r\n    \"editora\": \"Casa do Código\",\r\n    \"anoPublicacao\": \"2021\",\r\n    \"isbn\": \"978-65-86110-77-7\",\r\n    \"quantTotal\": 2,\r\n    \"quantDisponivel\": 2,\r\n    \"valorAquisicao\": \"59.90\",\r\n    \"statusLivroEmprestado\": \"Disponível\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/novo/livro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"novo",
+								"livro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ATUALIZA LIVRO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"titulo\": \"Back-end Java Microsserviços, Spring Boot e Kubernetes\",\r\n    \"autor\": \"Eduardo Felipe Zambom Santana\",\r\n    \"editora\": \"CASA DO CÓDIGO\",\r\n    \"anoPublicacao\": \"2023\",\r\n    \"isbn\": \"978-65-86110-61-6\",\r\n    \"quantTotal\": 4,\r\n    \"quantDisponivel\": 4,\r\n    \"valorAquisicao\": \"69.90\",\r\n    \"statusLivroEmprestado\": \"DISPONÍVEL\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/atualiza/livro?idLivro=21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"atualiza",
+								"livro"
+							],
+							"query": [
+								{
+									"key": "idLivro",
+									"value": "21"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REMOVE LIVRO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/remove/livro?idLivro=20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"remove",
+								"livro"
+							],
+							"query": [
+								{
+									"key": "idLivro",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EMPRÉSTIMO",
+			"item": [
+				{
+					"name": "LISTA EMPRÉSTIMOS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/lista/emprestimos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"lista",
+								"emprestimos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NOVO EMPRÉSTIMO",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idAluno\": 21,\r\n    \"idLivro\": 21,\r\n    \"dataEmprestimo\": \"2025-03-08\",\r\n    \"dataDevolucao\": \"2025-03-15\",\r\n    \"statusEmprestimo\": \"Em andamento\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/novo/emprestimo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"novo",
+								"emprestimo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ATUALIZA EMPRÉSTIMO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idAluno\": 21,\r\n    \"idLivro\": 21,\r\n    \"dataEmprestimo\": \"2025-02-08\",\r\n    \"dataDevolucao\": \"2025-02-22\",\r\n    \"statusEmprestimo\": \"Atrasado\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3333/atualiza/emprestimo?idEmprestimo=29",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"atualiza",
+								"emprestimo"
+							],
+							"query": [
+								{
+									"key": "idEmprestimo",
+									"value": "29"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REMOVE EMPRÉSTIMO",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3333/remove/emprestimo?idEmprestimo=24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3333",
+							"path": [
+								"remove",
+								"emprestimo"
+							],
+							"query": [
+								{
+									"key": "idEmprestimo",
+									"value": "24"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,83 +1,147 @@
-import { Request, Response } from "express";
 import { Livro } from "../model/Livro";
+import { Request, Response} from "express";
 
+/**
+ * Interface LivroDTO
+ * Define os atributos que devem ser recebidos do cliente nas requisições
+ */
 interface LivroDTO {
-     titulo: string,
-     autora: string,
-     editora: string,
-     anoPublicacao: string,
-     isbn: string,
-     quantTotal: number,
-     quantDisponivel: number,
-     valorAquisicao: number,
-     statusLivroEmprestado: string  
+    titulo: string;
+    autor: string;
+    editora: string;
+    anoPublicacao?: number;
+    isbn?: string;
+    quantTotal: number;
+    quantDisponivel: number;
+    valorAquisicao?: number;
+    statusLivroEmprestado?: string
 }
 
 /**
- * A classe LivroController estende a classe Livro e é responsável por controlar as requisições relacionadas aos livros.
- * 
- * - Esta classe atua como um controlador dentro de uma API REST, gerenciando as operações relacionadas ao recurso "livro".
- * - Herdando de Livro, ela pode acessar métodos e propriedades da classe base.
- */
-export class LivroController extends Livro {
+ * Controlador para operações relacionadas aos Livros.
+*/
+class LivroController extends Livro {
+    /**
+     * Lista todos os livros.
+     * @param req Objeto de requisição HTTP.
+     * @param res Objeto de resposta HTTP.
+     * @returns Lista de livros em formato JSON.
+     */
+    static async todos(req: Request, res: Response) {
+        try {
+            const listaDeLivros = await Livro.listarLivros();
+
+            res.status(200).json(listaDeLivros);
+        } catch (error) {
+            console.log(`Erro ao acessar método herdado: ${error}`);
+
+            res.status(400).json("Erro ao recuperar as informações do Livro");
+        }
+    }
 
     /**
-    * Lista todos os livros.
-    * @param req Objeto de requisição HTTP.
-    * @param res Objeto de resposta HTTP.
-    * @returns Lista de carros em formato JSON com status 200 em caso de sucesso.
-    * @throws Retorna um status 400 com uma mensagem de erro caso ocorra uma falha ao acessar a listagem de carros.
-    */
-    static async todos(req: Request, res: Response): Promise<any> {
+     * Cadastra um novo livro.
+     * @param req Objeto de requisição HTTP com os dados do aluno.
+     * @param res Objeto de resposta HTTP.
+     * @returns Mensagem de sucesso ou erro em formato JSON.
+     */
+    static async cadastrar(req: Request, res: Response) {
         try {
-            // acessa a função de listar os livros e armazena o resultado
-            const listaDeLivros = await Livro.listagemLivro();
+            const dadosRecebidos: LivroDTO = req.body;
+            
+            // Instanciando objeto Livro
+            const novoLivro = new Livro(
+                dadosRecebidos.titulo,
+                dadosRecebidos.autor, 
+                dadosRecebidos.editora,
+                (dadosRecebidos.anoPublicacao ?? 0).toString(),
+                dadosRecebidos.isbn ?? '',
+                dadosRecebidos.quantTotal,
+                dadosRecebidos.quantDisponivel,
+                dadosRecebidos.valorAquisicao ?? 0,
+                dadosRecebidos.statusLivroEmprestado ?? 'Disponível'
+            );
 
-            // retorna a lista de carros há quem fez a requisição web
-            return res.status(200).json(listaDeLivros);
+            // Chama o método para persistir o livro no banco de dados
+            const result = await Livro.cadastrarLivro(novoLivro);
+
+            // Verifica se a query foi executada com sucesso
+            if (result) {
+                return res.status(200).json(`Livro cadastrado com sucesso`);
+            } else {
+                return res.status(400).json('Não foi possível cadastrar o livro no banco de dados');
+            }
         } catch (error) {
-            // lança uma mensagem de erro no console
-            console.log('Erro ao acessar listagem de livros');
+            console.log(`Erro ao cadastrar o livro: ${error}`);
+            return res.status(400).json('Erro ao cadastrar o livro');
+        }
+    }
 
-            // retorna uma mensagem de erro há quem chamou a mensagem
-            return res.status(400).json({ mensagem: "Não foi possível acessar a listagem de livros" });
+     /**
+     * Remove um aluno.
+     * @param req Objeto de requisição HTTP com o ID do aluno a ser removido.
+     * @param res Objeto de resposta HTTP.
+     * @returns Mensagem de sucesso ou erro em formato JSON.
+     */
+     static async remover(req: Request, res: Response): Promise<Response> {
+        try {
+            const idLivro= parseInt(req.query.idLivro as string);
+            const result = await Livro.removerLivro(idLivro);
+            
+            if (result) {
+                return res.status(200).json('Livro removido com sucesso');
+            } else {
+                return res.status(401).json('Erro ao deletar livro');
+            }
+        } catch (error) {
+            console.log("Erro ao remover o Livro");
+            console.log(error);
+            return res.status(500).send("error");
         }
     }
     
-    static async novo(req: Request, res: Response): Promise<any> {
+    /**
+     * Método para atualizar o cadastro de um livro.
+     * 
+     * @param req Objeto de requisição do Express, contendo os dados atualizados do aluno
+     * @param res Objeto de resposta do Express
+     * @returns Retorna uma resposta HTTP indicando sucesso ou falha na atualização
+     */
+    static async atualizar(req: Request, res: Response): Promise<Response> {
         try {
-            // recuperando informações do corpo da requisição e colocando em um objeto da interface CarroDTO
-            const LivroRecebido: LivroDTO = req.body;
-
-            // instanciando um objeto do tipo carro com as informações recebidas
-            const novoLivro = new Livro(LivroRecebido.titulo, 
-                                        LivroRecebido.autora, 
-                                        LivroRecebido.editora, 
-                                        LivroRecebido.anoPublicacao,
-                                        LivroRecebido.isbn,
-                                        LivroRecebido.quantTotal,
-                                        LivroRecebido.quantDisponivel,
-                                        LivroRecebido.valorAquisicao,
-                                        LivroRecebido.statusLivroEmprestado );
-
-            // Chama a função de cadastro passando o objeto como parâmetro
-            const repostaClasse = await Livro.cadastroLivro(novoLivro);
-
-            // verifica a resposta da função
-            if(repostaClasse) {
-                // retornar uma mensagem de sucesso
-                return res.status(200).json({ mensagem: "Livro cadastrado com sucesso!" });
-            } else {
-                // retorno uma mensagem de erro
-                return res.status(400).json({ mensagem: "Erro ao cadastra o livro. Entre em contato com o administrador do sistema."})
-            }
+            const dadosRecebidos: LivroDTO = req.body;
             
-        } catch (error) {
-            // lança uma mensagem de erro no console
-            console.log(`Erro ao cadastrar um livro. ${error}`);
+            // Cria uma nova instância de Livro com os dados atualizados
+            const livro = new Livro(
+                dadosRecebidos.titulo,
+                dadosRecebidos.autor, 
+                dadosRecebidos.editora,
+                (dadosRecebidos.anoPublicacao ?? 0).toString(),
+                dadosRecebidos.isbn ?? '',
+                dadosRecebidos.quantTotal,
+                dadosRecebidos.quantDisponivel,
+                dadosRecebidos.valorAquisicao ?? 0,
+                dadosRecebidos.statusLivroEmprestado ?? 'Disponível'
+            );
 
-            // retorna uma mensagem de erro há quem chamou a mensagem
-            return res.status(400).json({ mensagem: "Não foi possível cadastrar o livro. Entre em contato com o administrador do sistema." });
+            // Define o ID do livro, que deve ser passado na query string
+            livro.setIdLivro(parseInt(req.query.idLivro as string));
+
+            // Chama o método para atualizar o cadastro do livro no banco de dados
+            if (await Livro.atualizarCadastroLivro(livro)) {
+                return res.status(200).json({ mensagem: "Cadastro atualizado com sucesso!" });
+            } else {
+                return res.status(400).json('Não foi possível atualizar o livro no banco de dados');
+            }
+        } catch (error) {
+            // Caso ocorra algum erro, este é registrado nos logs do servidor
+            console.error(`Erro no modelo: ${error}`);
+            // Retorna uma resposta com uma mensagem de erro
+            return res.json({ mensagem: "Erro ao atualizar aluno." });
         }
     }
 }
+
+export default LivroController;
+
+

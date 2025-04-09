@@ -1,42 +1,129 @@
-import { Request, Response } from "express";
 import { Emprestimo } from "../model/Emprestimo";
+import { Request, Response } from "express";
 
+/**
+ * Interface EmprestimoDTO
+ * Define os atributos que devem ser recebidos do cliente nas requisições
+ */
 interface EmprestimoDTO {
-    idEmprestimo: number;
+    idAluno: number;
     idLivro: number;
-    dataEmprestimo: Date;
-    dataDevolucao: Date;
+    dataEmprestimo: string;
+    dataDevolucao: string;
     statusEmprestimo: string;
 }
 
-/**
- * A classe EmprestimoController estende a classe Emprestimo e é responsável por controlar as requisições relacionadas aos Emprestimos.
- * 
- * - Esta classe atua como um controlador dentro de uma API REST, gerenciando as operações relacionadas ao recurso "Emprestimo".
- * - Herdando de Emprestimo, ela pode acessar métodos e propriedades da classe base.
- */
-export class EmprestimoController extends Emprestimo {
+class EmprestimoController extends Emprestimo {
+    /**
+     * Método para listar todos os empréstimos.
+     * Retorna um array de empréstimos com informações dos alunos e dos livros.
+     */
+    static async todos(req: Request, res: Response): Promise<Response> {
+        try {
+            // Chama o método listarEmprestimos do service
+            const listaDeEmprestimos = await Emprestimo.listarEmprestimos();
+
+            // Verifica se houve retorno de dados
+            if (!listaDeEmprestimos || listaDeEmprestimos.length === 0) {
+                return res.status(404).json({ message: 'Nenhum empréstimo encontrado.' });
+            }
+
+            // Retorna a lista de empréstimos com status 200 (OK)
+            return res.status(200).json(listaDeEmprestimos);
+        } catch (error) {
+            // Em caso de erro, retorna o erro com status 500 (erro do servidor)
+            console.error('Erro ao listar empréstimos:', error);
+            return res.status(500).json({ message: 'Erro ao listar os empréstimos.' });
+        }
+    }
 
     /**
-    * Lista todos os carros.
-    * @param req Objeto de requisição HTTP.
-    * @param res Objeto de resposta HTTP.
-    * @returns Lista de Emprestimos em formato JSON com status 200 em caso de sucesso.
-    * @throws Retorna um status 400 com uma mensagem de erro caso ocorra uma falha ao acessar a listagem de Emprestimos.
-    */
-    static async todos(req: Request, res: Response): Promise<any> {
+     * Cadastra um novo empréstimo.
+     * Recebe os dados do empréstimo a partir da requisição e passa para o serviço.
+     */
+    static async cadastrar(req: Request, res: Response): Promise<Response> {
         try {
-            // acessa a função de listar os Emprestimo e armazena o resultado
-            const listaDeEmprestimo = await Emprestimo.listagemEmprestimo();
+            const dadosRecebidos: EmprestimoDTO = req.body;
 
-            // retorna a lista de Emprestimo há quem fez a requisição web
-            return res.status(200).json(listaDeEmprestimo);
+            // Verifica se todos os campos obrigatórios foram fornecidos
+            if (!dadosRecebidos.idAluno || !dadosRecebidos.idLivro || !dadosRecebidos.dataEmprestimo || !dadosRecebidos.dataDevolucao || !dadosRecebidos.statusEmprestimo) {
+                return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+            }
+
+            // Chama o serviço para cadastrar o empréstimo
+            const novoIdEmprestimo = await Emprestimo.cadastrarEmprestimo(
+                dadosRecebidos.idAluno, dadosRecebidos.idLivro, new Date(dadosRecebidos.dataEmprestimo), new Date(dadosRecebidos.dataDevolucao), dadosRecebidos.statusEmprestimo
+            );
+
+            // Retorna a resposta de sucesso com o ID do novo empréstimo
+            return res.status(201).json({ message: 'Empréstimo cadastrado com sucesso', idEmprestimo: novoIdEmprestimo });
+
         } catch (error) {
-            // lança uma mensagem de erro no console
-            console.log('Erro ao acessar listagem de Emprestimo');
+            console.error('Erro ao cadastrar empréstimo:', error);
+            return res.status(500).json({ message: 'Erro ao cadastrar o empréstimo.' });
+        }
+    }
 
-            // retorna uma mensagem de erro há quem chamou a mensagem
-            return res.status(400).json({ mensagem: "Não foi possível acessar a listagem de Emprestimo" });
+    /**
+     * Atualiza um empréstimo existente.
+     * Recebe os dados do empréstimo a partir da requisição e passa para o serviço.
+     */
+    static async atualizar(req: Request, res: Response): Promise<Response> {
+        try {
+            const dadosRecebidos: EmprestimoDTO = req.body;
+            const idEmprestimo = parseInt(req.query.idEmprestimo as string);
+
+            // Verifica se todos os campos obrigatórios foram fornecidos
+            if (!idEmprestimo || !dadosRecebidos.idAluno || !dadosRecebidos.idLivro || !dadosRecebidos.dataEmprestimo || !dadosRecebidos.dataDevolucao || !dadosRecebidos.statusEmprestimo) {
+                return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+            }
+
+            // Chama o MODEL para atualizar o empréstimo/ Number(idEmprestimo) converte o idEmprestimo de string para number
+            const emprestimoAtualizado = await Emprestimo.atualizarEmprestimo(
+                idEmprestimo, dadosRecebidos.idAluno, dadosRecebidos.idLivro, new Date(dadosRecebidos.dataEmprestimo), new Date(dadosRecebidos.dataDevolucao), dadosRecebidos.statusEmprestimo
+            );
+
+            // Retorna a resposta de sucesso com o ID do empréstimo atualizado
+            return res.status(200).json({ message: 'Empréstimo atualizado com sucesso', idEmprestimo: emprestimoAtualizado });
+
+        } catch (error) {
+            console.error('Erro ao atualizar empréstimo:', error);
+            return res.status(500).json({ message: 'Erro ao atualizar o empréstimo.' });
+        }
+    }
+
+    /**
+     * Método para remover um empréstimo do banco de dados
+     * 
+     * @param req Objeto de requisição HTTP com o ID do aluno a ser removido.
+     * @param res Objeto de resposta HTTP.
+     * @returns Mensagem de sucesso ou erro em formato JSON.
+     */
+    static async remover(req: Request, res: Response): Promise<Response> {
+        // tenta executar a remoção do registro
+        try {
+            // id do empréstimo vindo do cliente
+            const idEmprestimo = parseInt(req.query.idEmprestimo as string);
+            // executa o método de remoção e armazena o resultado (booleano)
+            const resultado = await Emprestimo.removerEmprestimo(idEmprestimo);
+
+            // se o resultdo for true
+            if (resultado) {
+                // retorna mensagem e sucesso com status 200
+                return res.status(200).json('Empréstimo removido com sucesso!');
+            } else {
+                // retorna mensagem de erro com status 
+                return res.status(400).json('Erro ao remover empréstimo!');
+            }
+
+        // captura qualquer erro que possa acontecer
+        } catch (error) {
+            // exibe detalhes do erro no console
+            console.log(`Erro ao remover o Empréstimo ${error}`);
+            // retorna uma mensagem de erro com status 500
+            return res.status(500).send("error");
         }
     }
 }
+
+export default EmprestimoController;

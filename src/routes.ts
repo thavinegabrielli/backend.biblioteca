@@ -1,37 +1,31 @@
-import { Request, Response, Router } from "express";
-import { AlunoController} from "./controller/AlunoController";
-import { EmprestimoController } from "./controller/EmprestimoController";
-import { LivroController } from "./controller/LivroController";
+import express from "express";
+import { SERVER_ROUTES } from "./appConfig";
+import AlunoController from "./controller/AlunoController";
+import LivroController from "./controller/LivroController";
+import EmprestimoController from "./controller/EmprestimoController";
 
-// Cria um roteador
-const router = Router();
+const router = express.Router();
 
-// Criando uma rota principal para a aplicação
-router.get("/", (req: Request, res: Response) => {
-    res.json({ mensagem: "Olá, mundo!" });
+router.get('/', (req, res) => {
+    res.json({ mensagem: "Rota padrão" })
 });
 
-/* 
-* ROTAS PARA AlunoS
-*/ 
-// Rota para listar os Alunos
-router.get("/lista/Alunos", AlunoController.todos);
-// Rota para cadastrar um novo Aluno
-router.post("/novo/Aluno", AlunoController.novo);
+// CRUD Aluno
+router.get(SERVER_ROUTES.LISTAR_ALUNOS, AlunoController.todos);
+router.post(SERVER_ROUTES.NOVO_ALUNO, AlunoController.cadastrar);
+router.put(SERVER_ROUTES.REMOVER_ALUNO, AlunoController.remover);
+router.put(SERVER_ROUTES.ATUALIZAR_ALUNO, AlunoController.atualizar);
 
-/* 
-* ROTAS PARA LIVROS
-*/ 
-// Rota para listar os Livro
-router.get("/lista/livros", LivroController.todos);
-// Rota para cadastrar um novo pedido
-router.post("/novo/livro", LivroController.novo);
+//CRUD Livro
+router.get(SERVER_ROUTES.LISTAR_LIVROS, LivroController.todos);
+router.post(SERVER_ROUTES.NOVO_LIVRO, LivroController.cadastrar);
+router.put(SERVER_ROUTES.REMOVER_LIVRO, LivroController.remover);
+router.put(SERVER_ROUTES.ATUALIZAR_LIVRO, LivroController.atualizar);
 
-/* 
-* ROTAS PARA EMPRESTIMOS
-*/ 
-// Rota para listar os EmprestimoControllers
-router.get("/lista/emprestimo", EmprestimoController.todos);
+//CRUD Emprestimo
+router.get(SERVER_ROUTES.LISTAR_EMPRESTIMOS, EmprestimoController.todos);
+router.post(SERVER_ROUTES.NOVO_EMPRESTIMO, EmprestimoController.cadastrar);
+router.put(SERVER_ROUTES.ATUALIZAR_EMPRESTIMO, EmprestimoController.atualizar);
+router.put(SERVER_ROUTES.REMOVER_EMPRESTIMO, EmprestimoController.remover);
 
-// exportando as rotas
-export { router };
+export { router }
